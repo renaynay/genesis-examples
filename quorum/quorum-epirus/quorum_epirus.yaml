@@ -1,27 +1,7 @@
 services:
-  - name: Quorum
-    image: quorumengineering/quorum:2.2.5
-    environment:
-      GETH_PORT: 21000
-      GETH_RPC_PORT: 22000
-    volumes:
-      - path: /staticpeers/
-        name: staticpeers
-        scope: singleton
-    resources:
-      cpus: 4
-      memory: 4 GB
-    input-files:
-      - source-path: genesis.json
-        destination-path: /data/genesis.json
-      - source-path: key$_n
-        destination-path: /data/keystore/key$_n
-      - source-path: nodekey$_n
-        destination-path: /data/nodekey
-      - source-path: passwords.txt
-        destination-path: /data/passwords.txt
-    script:
-      inline: cp /staticpeers/static-nodes.json /data/static-nodes.json && cp /staticpeers/static-nodes.json /data/permissioned-nodes.json && geth --datadir /data init data/genesis.json; geth --datadir /data --unlock 0 --password /data/passwords.txt --syncmode full --mine --minerthreads 1 --rpc --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum  --verbosity 5
+  - name: QuorumCrux
+    image: docker pull blkio10/quorum-crux:v1.0.0
+    
   - name: Epirus
     image: blkio10/explorer-free:2.1.2
     environment:
