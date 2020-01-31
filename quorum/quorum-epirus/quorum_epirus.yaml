@@ -1,0 +1,83 @@
+services:
+  - name: Quorum
+    image: quorumengineering/quorum:2.2.5
+    volumes:
+      - path: /staticpeers/
+        name: staticpeers
+        scope: singleton
+    resources:
+      cpus: 4
+      memory: 4 GB
+    input-files:
+      - source-path: genesis.json
+        destination-path: /data/genesis.json
+      - source-path: key$_n
+        destination-path: /data/keystore/key$_n
+      - source-path: nodekey$_n
+        destination-path: /data/nodekey
+      - source-path: passwords.txt
+        destination-path: /data/passwords.txt
+    script:
+      inline: cp /staticpeers/static-nodes.json /data/static-nodes.json && cp /staticpeers/static-nodes.json /data/permissioned-nodes.json && geth --datadir /data init data/genesis.json; geth --datadir /data --unlock 0 --password /data/passwords.txt --syncmode full --mine --minerthreads 1 --rpc --rpcaddr 0.0.0.0 --rpcapi admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum  --verbosity 5
+  - name: Epirus
+    image: blkio10/explorer-free:2.1.2
+    environment:
+     - name: EXPLORER_PORT
+       value: 8081
+     - name: NODE_ENDPOINT
+       value: ${NODE_ENDPOINT}
+     - name: MONGO_CLIENT_URI
+       value: mongodb://mongodb:27017
+     - name: MONGO_DB_NAME
+       value: test
+     - name: UI_IP
+       value: http://localhost:8080
+  - name: Mongo
+    image: mongo:3.4.10
+    script:
+      inline: mongod --smallfiles --logpath=/dev/null --bind_ip "0.0.0.0"
+  - name: UI
+    image: blkio10/explorer-ui-free:2.1.2
+    environment:
+      - REACT_APP_EXPLORER=http://$:8081 # TODO
+task-runners:
+  - name: static-peers # generate static peers
+    image: "gcr.io/whiteblock/helpers/besu/staticpeers:master"
+    volumes:
+      - path: /staticpeers/
+        name: staticpeers
+        scope: singleton
+    script:
+      inline: ./besuStaticPeers generate -a '[{"publicKey":"ac6b1096ca56b9f6d004b779ae3728bf83f8e22453404cc3cef16a3d9b96608bc67c4b30db88e0a5a6c6390213f7acbe1153ff6d23ce57380104288ae19373ef"},{"publicKey":"0ba6b9f606a43a95edc6247cdb1c1e105145817be7bcafd6b2c0ba15d58145f0dc1a194f70ba73cd6f4cdd6864edc7687f311254c7555cc32e4d45aeb1b80416"},{"publicKey":"579f786d4e2830bbcc02815a27e8a9bacccc9605df4dc6f20bcc1a6eb391e7225fff7cb83e5b4ecd1f3a94d8b733803f2f66b7e871961e7b029e22c155c3a778"},{"publicKey":"3d9ca5956b38557aba991e31cf510d4df641dce9cc26bfeb7de082f0c07abb6ede3a58410c8f249dabeecee4ad3979929ac4c7c496ad20b8cfdd061b7401b4f5"}]' --ip '["'$QUORUM_SERVICE0_QUORUM_NETWORK'", "'$QUORUM_SERVICE1_QUORUM_NETWORK'", "'$QUORUM_SERVICE2_QUORUM_NETWORK'", "'$QUORUM_SERVICE3_QUORUM_NETWORK'"]' >> /staticpeers/static-nodes.json
+tests:
+  - name: testnet
+    description: run a Quorum testnet and execute some simple transactions
+    phases:
+      - name: generate-static-peers
+        tasks:
+          - type: static-peers
+      - name: start-quorum
+        duration: 120 m
+        system:
+          - type: Quorum
+            count: 4
+            resources:
+              networks:
+                - name: quorum_network
+          - type: Epirus
+            port-mappings:
+              - 8081:8081
+            resources:
+              networks:
+                 - name: quorum-network
+          - type: Mongo
+            resources:
+              networks:
+                 - name: quorum-network
+          - type: UI
+            port-mappings:
+              - 5000:5000
+              - 5000:8080
+            resources:
+              networks:
+                 - name: quorum-network
