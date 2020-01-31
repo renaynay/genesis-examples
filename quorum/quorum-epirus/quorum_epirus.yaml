@@ -22,16 +22,11 @@ services:
   - name: Epirus
     image: blkio10/explorer-free:2.1.2
     environment:
-     - name: EXPLORER_PORT
-       value: 8081
-     - name: NODE_ENDPOINT
-       value: ${NODE_ENDPOINT}
-     - name: MONGO_CLIENT_URI
-       value: mongodb://mongodb:27017
-     - name: MONGO_DB_NAME
-       value: test
-     - name: UI_IP
-       value: http://localhost:8080
+     EXPLORER_PORT: 8081
+     NODE_ENDPOINT: ${NODE_ENDPOINT}
+     MONGO_CLIENT_URI: mongodb://mongodb:27017
+     MONGO_DB_NAME: test
+     UI_IP: http://localhost:8080
   - name: Mongo
     image: mongo:3.4.10
     script:
@@ -39,7 +34,7 @@ services:
   - name: UI
     image: blkio10/explorer-ui-free:2.1.2
     environment:
-      - REACT_APP_EXPLORER=http://$:8081 # TODO
+      REACT_APP_EXPLORER: http://${EPIRUS_SERVICE0_QUORUM_NETWORK}:8081
 task-runners:
   - name: static-peers # generate static peers
     image: "gcr.io/whiteblock/helpers/besu/staticpeers:master"
@@ -77,7 +72,7 @@ tests:
           - type: UI
             port-mappings:
               - 5000:5000
-              - 5000:8080
+              - 5000:80
             resources:
               networks:
                  - name: quorum-network
