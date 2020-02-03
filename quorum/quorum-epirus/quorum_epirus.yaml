@@ -12,6 +12,7 @@ services:
       GETH_RPC_PORT: 22000
       OTHER_NODES: http://node2:9000/
       PERMISSIONED_NODES: '["enode://5c3c98e3a28a87e73ab40468212de7ab6cf0e2afa77781295925f32369c00baf30f664e52f8d152c02b069d6daa1a61f477e3c1eca64403529dfbd0c31e09524@${QUORUM1_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://9b98a96a8ba080ff4c7863e5fdf3211a7082b612d5897ae4eed687eec391eb421c8ed7c572ca17f257441a0cb544a7c184244dfdf9a114f5251da3dac72e7585@${QUORUM2_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a51690b44ab39fd83c42b5a7c087ba222970951f06655ebbba1625267fad105fd238c9f092e05b2293f526e748b2fa423b22d66296f770037393c26a9e5d3543@@{QUORUM3_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a68df7cd75e9ea490653bdba7c6868f979944578e59c9efd2aa62878822f16f46a49a13289f6392923053be1acb3a6ec8e2fc92cae59de859fd5892071fbfa88@${QUORUM4_SERVICE0_QUORUM_NETWORK}:21000?discport=0"]'
+      PRIVATE_CONFIG: qdata/c/tm.ipc nohup geth --datadir qdata/dd $ARGS --rpcport $GETH_RPC_PORT --port $GETH_PORT --nodekeyhex $NODE_KEY --unlock 0 --password passwords.txt --verbosity=6
   - name: quorum2
     image: blkio10/quorum-crux:v1.0.0
     environment:
@@ -25,6 +26,7 @@ services:
       GETH_RPC_PORT: 22000
       OTHER_NODES: http://node3:9000/
       PERMISSIONED_NODES: '["enode://5c3c98e3a28a87e73ab40468212de7ab6cf0e2afa77781295925f32369c00baf30f664e52f8d152c02b069d6daa1a61f477e3c1eca64403529dfbd0c31e09524@${QUORUM1_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://9b98a96a8ba080ff4c7863e5fdf3211a7082b612d5897ae4eed687eec391eb421c8ed7c572ca17f257441a0cb544a7c184244dfdf9a114f5251da3dac72e7585@${QUORUM2_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a51690b44ab39fd83c42b5a7c087ba222970951f06655ebbba1625267fad105fd238c9f092e05b2293f526e748b2fa423b22d66296f770037393c26a9e5d3543@@{QUORUM3_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a68df7cd75e9ea490653bdba7c6868f979944578e59c9efd2aa62878822f16f46a49a13289f6392923053be1acb3a6ec8e2fc92cae59de859fd5892071fbfa88@${QUORUM4_SERVICE0_QUORUM_NETWORK}:21000?discport=0"]'
+      PRIVATE_CONFIG: qdata/c/tm.ipc nohup geth --datadir qdata/dd $ARGS --rpcport $GETH_RPC_PORT --port $GETH_PORT --nodekeyhex $NODE_KEY --unlock 0 --password passwords.txt --verbosity=6
   - name: quorum3
     image: blkio10/quorum-crux:v1.0.0
     environment:
@@ -38,6 +40,7 @@ services:
       GETH_RPC_PORT: 22000
       OTHER_NODES: http://node4:9000/
       PERMISSIONED_NODES: '["enode://5c3c98e3a28a87e73ab40468212de7ab6cf0e2afa77781295925f32369c00baf30f664e52f8d152c02b069d6daa1a61f477e3c1eca64403529dfbd0c31e09524@${QUORUM1_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://9b98a96a8ba080ff4c7863e5fdf3211a7082b612d5897ae4eed687eec391eb421c8ed7c572ca17f257441a0cb544a7c184244dfdf9a114f5251da3dac72e7585@${QUORUM2_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a51690b44ab39fd83c42b5a7c087ba222970951f06655ebbba1625267fad105fd238c9f092e05b2293f526e748b2fa423b22d66296f770037393c26a9e5d3543@@{QUORUM3_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a68df7cd75e9ea490653bdba7c6868f979944578e59c9efd2aa62878822f16f46a49a13289f6392923053be1acb3a6ec8e2fc92cae59de859fd5892071fbfa88@${QUORUM4_SERVICE0_QUORUM_NETWORK}:21000?discport=0"]'
+      PRIVATE_CONFIG: qdata/c/tm.ipc nohup geth --datadir qdata/dd $ARGS --rpcport $GETH_RPC_PORT --port $GETH_PORT --nodekeyhex $NODE_KEY --unlock 0 --password passwords.txt --verbosity=6
   - name: quorum4
     image: blkio10/quorum-crux:v1.0.0
     environment:
@@ -51,6 +54,7 @@ services:
       GETH_RPC_PORT: 22000
       OTHER_NODES: http://node1:9000/
       PERMISSIONED_NODES: '["enode://5c3c98e3a28a87e73ab40468212de7ab6cf0e2afa77781295925f32369c00baf30f664e52f8d152c02b069d6daa1a61f477e3c1eca64403529dfbd0c31e09524@${QUORUM1_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://9b98a96a8ba080ff4c7863e5fdf3211a7082b612d5897ae4eed687eec391eb421c8ed7c572ca17f257441a0cb544a7c184244dfdf9a114f5251da3dac72e7585@${QUORUM2_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a51690b44ab39fd83c42b5a7c087ba222970951f06655ebbba1625267fad105fd238c9f092e05b2293f526e748b2fa423b22d66296f770037393c26a9e5d3543@@{QUORUM3_SERVICE0_QUORUM_NETWORK}:21000?discport=0","enode://a68df7cd75e9ea490653bdba7c6868f979944578e59c9efd2aa62878822f16f46a49a13289f6392923053be1acb3a6ec8e2fc92cae59de859fd5892071fbfa88@${QUORUM4_SERVICE0_QUORUM_NETWORK}:21000?discport=0"]'
+      PRIVATE_CONFIG: qdata/c/tm.ipc nohup geth --datadir qdata/dd $ARGS --rpcport $GETH_RPC_PORT --port $GETH_PORT --nodekeyhex $NODE_KEY --unlock 0 --password passwords.txt --verbosity=6
   - name: epirus
     image: blkio10/explorer-free:2.1.2
     environment:
@@ -58,52 +62,52 @@ services:
       NODE_ENDPOINT: http://${QUORUM1_SERVICE0_QUORUM_NETWORK}:22001
       MONGO_CLIENT_URI: mongodb://mongodb:27017
       MONGO_DB_NAME: test
-      UI_IP: http://localhost:8080
+      UI_IP: http://localhost:5000
   - name: mongo
     image: mongo:3.4.10
     script:
       inline: mongod --smallfiles --logpath=/dev/null --bind_ip "0.0.0.0"
   - name: ui
     image: blkio10/explorer-ui-free:2.1.2
+    resources:
+      cpus: 5
+      memory: 10 GB
     environment:
-      REACT_APP_EXPLORER: http://${EPIRUS_SERVICE0_QUORUM_NETWORK}:8081
+      REACT_APP_EXPLORER: http://${EPIRUS_SERVICE0_QUORUM_NETWORK}:5000
 tests:
   - name: testnet
     description: run a Quorum testnet and execute some simple transactions
-    phases:
-      - name: start-quorum
-        duration: 20 m
-        system:
-          - type: quorum1
-            resources:
-              networks:
-                - name: quorum_network
-          - type: quorum2
-            resources:
-              networks:
-                - name: quorum_network
-          - type: quorum3
-            resources:
-              networks:
-                - name: quorum_network
-          - type: quorum4
-            resources:
-              networks:
-                - name: quorum_network
-          - type: epirus
-            port-mappings:
-              - 8081:8081
-            resources:
-              networks:
-                 - name: quorum-network
-          - type: mongo
-            resources:
-              networks:
-                 - name: quorum-network
-          - type: ui
-            port-mappings:
-              - 5000:5000
-              - 5000:80
-            resources:
-              networks:
-                 - name: quorum-network
+    wait-for: 20 m
+    system:
+      - type: quorum1
+        resources:
+          networks:
+            - name: quorum_network
+      - type: quorum2
+        resources:
+          networks:
+            - name: quorum_network
+      - type: quorum3
+        resources:
+          networks:
+            - name: quorum_network
+      - type: quorum4
+        resources:
+          networks:
+            - name: quorum_network
+      - type: epirus
+        port-mappings:
+          - 8081:8081
+        resources:
+          networks:
+             - name: quorum-network
+      - type: mongo
+        resources:
+          networks:
+             - name: quorum-network
+      - type: ui
+        port-mappings:
+          - 5000:80
+        resources:
+          networks:
+             - name: quorum-network
