@@ -1,0 +1,101 @@
+services:
+  - name: beacon-node
+      image: gcr.io/whiteblock/ethdenver-prysm-beacon-node:latest
+      resources:
+        cpus: 4
+        memory: 4 GB
+        storage: 10 GiB
+  - name: validator
+    args:
+      - '--bootstrap-node=/dns4/beacon-node-deploy-service0/tcp/13000/p2p/16Uiu2HAmCKyAFZpQ8vXtepfdkCwKEbTEwKTY3XeE4aVmer4xgnyC'
+      - '--beacon-rpc-provider=beacon-node-deploy-service0:4000'
+    image: gcr.io/whiteblock/ethdenver-prysm-validator:cleaned
+    resources:
+      cpus: 1
+      memory: 2 GB
+      storage: 10 GiB
+  - name: beacon-node2
+    image: gcr.io/whiteblock/ethdenver-prysm-beacon-node:latest
+    resources:
+      cpus: 4
+      memory: 4 GB
+      storage: 10 GiB
+  - name: validator2
+    args:
+      - '--bootstrap-node=/dns4/beacon-node2-service0/tcp/13000/p2p/16Uiu2HAmCKyAFZpQ8vXtepfdkCwKEbTEwKTY3XeE4aVmer4xgnyC'
+      - '--beacon-rpc-provider=beacon-node2-service0:4000'
+    image: gcr.io/whiteblock/ethdenver-prysm-validator:cleaned
+    resources:
+      cpus: 1
+      memory: 2 GB
+      storage: 10 GiB
+  tests:
+    - name: simple-prysm-exercise
+      description: "run a prysm testnet and validate some blocks"
+      wait-for: 2 m #wait for this amount of time before starting validators
+      system:
+        - name: beacon-node-deploy
+          type: beacon-node
+          count: 1
+          resources:
+            networks:
+              - name: common-network
+        - type: beacon-node2
+          count: 1
+          resources:
+            networks:
+              - name: common-network
+      phases:
+        - name: validators
+          system:
+            - type: validator
+              count: 1
+              resources:
+                networks:
+                  - name: common-network
+            - type: validator2
+              count: 1
+              resources:
+                networks:
+                  - name: common-network
+        - name: partition
+          description: partition the nodes
+          system:
+            - name: beacon-node-deploy
+              type: beacon-node
+              resources:
+                networks:
+                  - name: common-network
+            - type: beacon-node2
+              resources:
+                networks:
+                  - name: common-network2
+            - type: validator
+              resources:
+                networks:
+                  - name: common-network
+            - type: validator2
+              resources:
+                networks:
+                  - name: common-network2
+          duration: 5 m
+        - name: merge
+          system:
+            - name: beacon-node-deploy
+              type: beacon-node
+              resources:
+                networks:
+                  - name: common-network
+            - type: beacon-node2
+              resources:
+                networks:
+                  - name: common-network
+            - type: validator
+              resources:
+                networks:
+                  - name: common-network
+            - type: validator2
+              resources:
+                networks:
+                  - name: common-network
+          duration: 10 m
